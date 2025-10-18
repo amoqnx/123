@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Геометрический калькулятор — Векторы и Координаты</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./styles.css" />
+
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        svg: { fontCache: 'global' }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="container header-inner">
+        <h1>Геометрический калькулятор</h1>
+        <p class="subtitle">Векторы, координаты, прямые. Формулы, объяснения и визуализация.</p>
+      </div>
+    </header>
+
+    <main class="container main-grid">
+      <section class="card full">
+        <nav class="tabs" role="tablist" aria-label="Разделы калькулятора">
+          <button class="tab active" data-tab-target="#vectors" role="tab" aria-selected="true">Калькулятор векторов</button>
+          <button class="tab" data-tab-target="#coordinates" role="tab" aria-selected="false">Калькулятор координат</button>
+        </nav>
+      </section>
+
+      <!-- Векторы -->
+      <section id="vectors" class="card tab-panel active" role="tabpanel" aria-labelledby="tab-vectors">
+        <div class="panel-grid">
+          <div class="panel-left">
+            <div class="form-row">
+              <label for="vector-operation">Операция</label>
+              <select id="vector-operation" class="select" title="Выберите операцию с векторами">
+                <option value="vector_from_points">Координаты вектора по двум точкам</option>
+                <option value="length">Длина (модуль) вектора</option>
+                <option value="add">Сложение векторов</option>
+                <option value="scale">Умножение вектора на число</option>
+                <option value="dot">Скалярное произведение</option>
+                <option value="angle">Угол между двумя векторами</option>
+                <option value="collinear">Проверка коллинеарности</option>
+                <option value="perpendicular">Проверка перпендикулярности</option>
+              </select>
+            </div>
+
+            <div id="vector-inputs" class="inputs"></div>
+
+            <div class="actions">
+              <button id="vector-calc" class="btn primary" title="Выполнить вычисление (Enter)">Вычислить</button>
+              <button id="vector-reset" class="btn" title="Очистить форму">Сбросить</button>
+            </div>
+
+            <div class="explain">
+              <h3>Формулы и объяснение</h3>
+              <div id="vector-formula" class="formula" aria-live="polite"></div>
+              <div id="vector-explain" class="explain-text" aria-live="polite"></div>
+            </div>
+
+            <div class="result">
+              <h3>Результат</h3>
+              <div id="vector-result" class="result-text" aria-live="polite" role="status"></div>
+            </div>
+          </div>
+          <div class="panel-right">
+            <canvas id="vector-canvas" width="800" height="520" aria-label="Плоскость для визуализации векторов" title="Координатная плоскость. Изменяйте размер окна для обновления масштаба."></canvas>
+            <div class="legend">
+              <span class="chip chip-u">u</span>
+              <span class="chip chip-v">v</span>
+              <span class="chip chip-res">результат</span>
+              <span class="chip chip-aux">дополн.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Координаты -->
+      <section id="coordinates" class="card tab-panel" role="tabpanel" aria-labelledby="tab-coordinates">
+        <div class="panel-grid">
+          <div class="panel-left">
+            <div class="form-row">
+              <label for="coord-operation">Операция</label>
+              <select id="coord-operation" class="select" title="Выберите операцию с точками и прямыми">
+                <option value="distance">Расстояние между двумя точками</option>
+                <option value="midpoint">Середина отрезка</option>
+                <option value="divide_ratio">Деление отрезка в заданном отношении</option>
+                <option value="triangle_area">Площадь треугольника по трём точкам</option>
+                <option value="centroid">Центроид треугольника</option>
+                <option value="line_through_two_points">Уравнение прямой через две точки</option>
+                <option value="line_point_direction">Уравнение прямой через точку и направляющий вектор</option>
+                <option value="line_point_perp_vector">Уравнение прямой через точку перпендикулярно вектору</option>
+                <option value="line_intercepts">Уравнение прямой в отрезках</option>
+                <option value="line_slope">Уравнение прямой с угловым коэффициентом</option>
+                <option value="lines_parallel">Параллельны ли две прямые</option>
+                <option value="lines_perp">Перпендикулярны ли две прямые</option>
+                <option value="lines_intersection">Точка пересечения двух прямых</option>
+                <option value="lines_angle">Угол между двумя прямыми</option>
+              </select>
+            </div>
+
+            <div id="coord-inputs" class="inputs"></div>
+
+            <div class="actions">
+              <button id="coord-calc" class="btn primary" title="Выполнить вычисление (Enter)">Вычислить</button>
+              <button id="coord-reset" class="btn" title="Очистить форму">Сбросить</button>
+            </div>
+
+            <div class="explain">
+              <h3>Формулы и объяснение</h3>
+              <div id="coord-formula" class="formula" aria-live="polite"></div>
+              <div id="coord-explain" class="explain-text" aria-live="polite"></div>
+            </div>
+
+            <div class="result">
+              <h3>Результат</h3>
+              <div id="coord-result" class="result-text" aria-live="polite" role="status"></div>
+            </div>
+          </div>
+          <div class="panel-right">
+            <canvas id="coord-canvas" width="800" height="520" aria-label="Плоскость для визуализации точек и прямых" title="Координатная плоскость. Изменяйте размер окна для обновления масштаба."></canvas>
+            <div class="legend">
+              <span class="chip chip-u">A/B/C</span>
+              <span class="chip chip-v">D/E/F</span>
+              <span class="chip chip-res">результат</span>
+              <span class="chip chip-aux">дополн.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer container">
+      <p>Все вычисления выполняются в браузере. Формулы отображаются с помощью MathJax.</p>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
