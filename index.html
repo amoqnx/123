@@ -239,6 +239,17 @@
       margin-bottom: 6px;
     }
 
+    /* Шаги подробного решения */
+    .explain .steps {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+    .explain .steps li::marker { color: var(--accent); font-weight: 700; }
+    .explain .step-title { font-weight: 600; color: #e5e7eb; }
+    .explain .step-body { color: var(--muted); }
+
     .muted { color: var(--muted); }
 
     .sticky-tools {
@@ -827,9 +838,37 @@
 
     function setHTML(id, html) {
       const el = document.getElementById(id);
-      if (el) {
-        el.innerHTML = html;
+      if (!el) return;
+      if (id.startsWith('exp-') && typeof html === 'string') {
+        try {
+          const match = html.match(/<div class="formula">([\s\S]*?)<\/div>/);
+          const formulaDiv = match ? html.slice(match.index, match.index + match[0].length) : '';
+          const after = match ? html.slice(match.index + match[0].length).trim() : html.trim();
+          const steps = [];
+          if (after) {
+            steps.push({ title: 'Подстановка', body: after });
+          }
+          const suffix = id.replace(/^exp-/, '');
+          const resEl = document.getElementById('res-' + suffix);
+          if (resEl && resEl.innerHTML) {
+            steps.push({ title: 'Результат', body: resEl.innerHTML });
+          }
+          if (formulaDiv || steps.length) {
+            html = `${formulaDiv}${renderSteps(steps)}`;
+          }
+        } catch (_) { /* noop */ }
       }
+      el.innerHTML = html;
+    }
+
+    // Рендер списка шагов подробного решения
+    function renderSteps(steps) {
+      const items = steps.map((s) => {
+        const title = s.title ? `<div class="step-title">${s.title}</div>` : '';
+        const body = s.body ? `<div class="step-body">${s.body}</div>` : '';
+        return `<li>${title}${body}</li>`;
+      }).join('');
+      return `<ol class="steps">${items}</ol>`;
     }
 
     function attachNumericScrollStep() {
