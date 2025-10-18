@@ -1,150 +1,1659 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Геометрический калькулятор — Векторы и Координаты</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Геометрический калькулятор: Векторы и Координаты</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;            /* slate-900 */
+      --panel: #111827;         /* gray-900 */
+      --panel-2: #0b1220;       /* darker */
+      --text: #e2e8f0;          /* slate-200 */
+      --muted: #a1a1aa;         /* zinc-400 */
+      --accent: #22d3ee;        /* cyan-400 */
+      --accent-2: #60a5fa;      /* blue-400 */
+      --danger: #fb7185;        /* rose-400 */
+      --success: #34d399;       /* emerald-400 */
+      --warn: #fbbf24;          /* amber-400 */
+      --card: #0b1220;          /* dark panel */
+      --card-border: #1f2937;   /* gray-800 */
+      --input-bg: #0b1020;
+      --input-border: #243142;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(34,211,238,0.08), transparent 50%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(96,165,250,0.08), transparent 45%),
+                  var(--bg);
+    }
 
-    <link rel="stylesheet" href="./styles.css" />
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(11, 18, 32, 0.9), rgba(11, 18, 32, 0.6));
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--card-border);
+    }
 
-    <script>
-      window.MathJax = {
-        tex: {
-          inlineMath: [["\\(", "\\)"]],
-          displayMath: [["\\[", "\\]"]]
-        },
-        svg: { fontCache: 'global' }
-      };
-    </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-  </head>
-  <body>
-    <header class="app-header">
-      <div class="container header-inner">
-        <h1>Геометрический калькулятор</h1>
-        <p class="subtitle">Векторы, координаты, прямые. Формулы, объяснения и визуализация.</p>
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 16px 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .brand .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 2px rgba(34,211,238,0.15), 0 10px 20px rgba(34,211,238,0.2);
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.9;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all .2s ease;
+    }
+    nav a:hover {
+      background: rgba(96,165,250,0.12);
+      color: #fff;
+    }
+
+    main.container { padding-top: 22px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(12,18,32,0.9), rgba(10,16,30,0.9));
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--card-border);
+      background: linear-gradient(180deg, rgba(30, 58, 138, 0.14), transparent);
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .panel-body {
+      padding: 14px 16px 18px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(20,28,46, 0.75), rgba(10,16,30,0.9));
+      overflow: hidden;
+    }
+
+    .card h3 {
+      margin: 0;
+      padding: 14px 14px 10px;
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+      background: linear-gradient(180deg, rgba(34,211,238,0.08), transparent);
+    }
+
+    .card .content {
+      padding: 12px 14px 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      align-items: end;
+    }
+    .form-grid.two { grid-template-columns: repeat(2, 1fr); }
+    .form-grid.three { grid-template-columns: repeat(3, 1fr); }
+    .form-grid.six { grid-template-columns: repeat(6, 1fr); }
+    .form-grid.auto-fit { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .field input[type="number"] {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      padding: 10px 10px;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+      width: 100%;
+    }
+    .field input[type="number"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    button.btn {
+      appearance: none;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #001018;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform .05s ease, box-shadow .2s ease, filter .2s ease;
+      box-shadow: 0 6px 14px rgba(34,211,238,0.25);
+      white-space: nowrap;
+    }
+    button.btn:hover { filter: brightness(1.05); }
+    button.btn:active { transform: translateY(1px); }
+
+    button.btn.secondary {
+      background: linear-gradient(135deg, #94a3b8, #64748b);
+      color: #0b1220;
+      box-shadow: 0 6px 14px rgba(100,116,139,0.25);
+    }
+
+    .result, .explain {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(2,6,23,0.35);
+      border: 1px solid var(--card-border);
+    }
+    .result strong { color: #fff; }
+
+    .explain .formula {
+      color: #e5e7eb;
+      margin-bottom: 6px;
+    }
+
+    .muted { color: var(--muted); }
+
+    .sticky-tools {
+      display: grid;
+      gap: 12px;
+      position: sticky;
+      top: 72px;
+    }
+
+    canvas#plane {
+      width: 100%;
+      height: 500px;
+      display: block;
+      background: radial-gradient(600px 320px at 20% 10%, rgba(34,211,238,0.06), transparent 45%),
+                  radial-gradient(600px 360px at 80% 5%, rgba(96,165,250,0.06), transparent 45%),
+                  #060a12;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill {
+      padding: 8px 10px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+    }
+    .switch input { accent-color: var(--accent); }
+
+    .note { font-size: 12px; color: var(--muted); }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .kpi .tile {
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.04);
+    }
+    .kpi .tile .label { font-size: 12px; color: var(--muted); }
+    .kpi .tile .value { font-size: 20px; font-weight: 700; }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend i {
+      width: 12px; height: 12px; display: inline-block; border-radius: 3px;
+    }
+
+    a.inline {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+
+  <!-- MathJax configuration and loader -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]']],
+        digits: /[0-9]/
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>Геометрический калькулятор</div>
       </div>
-    </header>
+      <nav>
+        <a href="#vectors">Калькулятор векторов</a>
+        <a href="#coords">Калькулятор координат</a>
+      </nav>
+    </div>
+  </header>
 
-    <main class="container main-grid">
-      <section class="card full">
-        <nav class="tabs" role="tablist" aria-label="Разделы калькулятора">
-          <button class="tab active" data-tab-target="#vectors" role="tab" aria-selected="true">Калькулятор векторов</button>
-          <button class="tab" data-tab-target="#coordinates" role="tab" aria-selected="false">Калькулятор координат</button>
-        </nav>
-      </section>
-
-      <!-- Векторы -->
-      <section id="vectors" class="card tab-panel active" role="tabpanel" aria-labelledby="tab-vectors">
-        <div class="panel-grid">
-          <div class="panel-left">
-            <div class="form-row">
-              <label for="vector-operation">Операция</label>
-              <select id="vector-operation" class="select" title="Выберите операцию с векторами">
-                <option value="vector_from_points">Координаты вектора по двум точкам</option>
-                <option value="length">Длина (модуль) вектора</option>
-                <option value="add">Сложение векторов</option>
-                <option value="scale">Умножение вектора на число</option>
-                <option value="dot">Скалярное произведение</option>
-                <option value="angle">Угол между двумя векторами</option>
-                <option value="collinear">Проверка коллинеарности</option>
-                <option value="perpendicular">Проверка перпендикулярности</option>
-              </select>
+  <main class="container">
+    <div class="layout">
+      <section class="panel" id="vectors">
+        <div class="panel-header">
+          <div class="panel-title">Калькулятор векторов</div>
+          <div class="pill">Все вычисления и визуализация — на клиенте</div>
+        </div>
+        <div class="panel-body">
+          <div class="cards">
+            <!-- Вектор по двум точкам -->
+            <div class="card" id="card-v-from-points">
+              <h3>Координаты вектора по двум точкам</h3>
+              <div class="content">
+                <form id="form-v-from-points" class="form-grid six">
+                  <div class="field"><label>Ax</label><input type="number" step="any" id="A_x" placeholder="0" title="Координата x точки A"></div>
+                  <div class="field"><label>Ay</label><input type="number" step="any" id="A_y" placeholder="0" title="Координата y точки A"></div>
+                  <div class="field"><label>Bx</label><input type="number" step="any" id="B_x" placeholder="3" title="Координата x точки B"></div>
+                  <div class="field"><label>By</label><input type="number" step="any" id="B_y" placeholder="2" title="Координата y точки B"></div>
+                  <div class="btn-row">
+                    <button type="submit" class="btn">Вычислить и нарисовать</button>
+                    <button type="button" class="btn secondary" data-action="clear">Очистить</button>
+                  </div>
+                </form>
+                <div class="result" id="res-v-from-points"></div>
+                <div class="explain" id="exp-v-from-points"></div>
+              </div>
             </div>
 
-            <div id="vector-inputs" class="inputs"></div>
-
-            <div class="actions">
-              <button id="vector-calc" class="btn primary" title="Выполнить вычисление (Enter)">Вычислить</button>
-              <button id="vector-reset" class="btn" title="Очистить форму">Сбросить</button>
+            <!-- Длина (модуль) вектора -->
+            <div class="card" id="card-v-length">
+              <h3>Длина (модуль) вектора</h3>
+              <div class="content">
+                <form id="form-v-length" class="form-grid three">
+                  <div class="field"><label>vx</label><input type="number" step="any" id="L_vx" placeholder="3"></div>
+                  <div class="field"><label>vy</label><input type="number" step="any" id="L_vy" placeholder="4"></div>
+                  <div class="btn-row">
+                    <button type="submit" class="btn">Вычислить и нарисовать</button>
+                  </div>
+                </form>
+                <div class="result" id="res-v-length"></div>
+                <div class="explain" id="exp-v-length"></div>
+              </div>
             </div>
 
-            <div class="explain">
-              <h3>Формулы и объяснение</h3>
-              <div id="vector-formula" class="formula" aria-live="polite"></div>
-              <div id="vector-explain" class="explain-text" aria-live="polite"></div>
+            <!-- Сложение векторов -->
+            <div class="card" id="card-v-add">
+              <h3>Сложение векторов</h3>
+              <div class="content">
+                <form id="form-v-add" class="form-grid six">
+                  <div class="field"><label>v₁x</label><input type="number" step="any" id="S_v1x" placeholder="1"></div>
+                  <div class="field"><label>v₁y</label><input type="number" step="any" id="S_v1y" placeholder="2"></div>
+                  <div class="field"><label>v₂x</label><input type="number" step="any" id="S_v2x" placeholder="3"></div>
+                  <div class="field"><label>v₂y</label><input type="number" step="any" id="S_v2y" placeholder="-1"></div>
+                  <div class="btn-row">
+                    <button type="submit" class="btn">Вычислить и нарисовать</button>
+                  </div>
+                </form>
+                <div class="result" id="res-v-add"></div>
+                <div class="explain" id="exp-v-add"></div>
+              </div>
             </div>
 
-            <div class="result">
-              <h3>Результат</h3>
-              <div id="vector-result" class="result-text" aria-live="polite" role="status"></div>
+            <!-- Умножение вектора на число -->
+            <div class="card" id="card-v-scale">
+              <h3>Умножение вектора на число</h3>
+              <div class="content">
+                <form id="form-v-scale" class="form-grid four">
+                  <div class="field"><label>vx</label><input type="number" step="any" id="M_vx" placeholder="2"></div>
+                  <div class="field"><label>vy</label><input type="number" step="any" id="M_vy" placeholder="-1"></div>
+                  <div class="field"><label>k</label><input type="number" step="any" id="M_k" placeholder="2"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-v-scale"></div>
+                <div class="explain" id="exp-v-scale"></div>
+              </div>
             </div>
-          </div>
-          <div class="panel-right">
-            <canvas id="vector-canvas" width="800" height="520" aria-label="Плоскость для визуализации векторов" title="Координатная плоскость. Изменяйте размер окна для обновления масштаба."></canvas>
-            <div class="legend">
-              <span class="chip chip-u">u</span>
-              <span class="chip chip-v">v</span>
-              <span class="chip chip-res">результат</span>
-              <span class="chip chip-aux">дополн.</span>
+
+            <!-- Скалярное произведение -->
+            <div class="card" id="card-v-dot">
+              <h3>Скалярное произведение двух векторов</h3>
+              <div class="content">
+                <form id="form-v-dot" class="form-grid six">
+                  <div class="field"><label>v₁x</label><input type="number" step="any" id="D_v1x" placeholder="1"></div>
+                  <div class="field"><label>v₁y</label><input type="number" step="any" id="D_v1y" placeholder="0"></div>
+                  <div class="field"><label>v₂x</label><input type="number" step="any" id="D_v2x" placeholder="0"></div>
+                  <div class="field"><label>v₂y</label><input type="number" step="any" id="D_v2y" placeholder="1"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-v-dot"></div>
+                <div class="explain" id="exp-v-dot"></div>
+              </div>
+            </div>
+
+            <!-- Угол между векторами -->
+            <div class="card" id="card-v-angle">
+              <h3>Угол между двумя векторами</h3>
+              <div class="content">
+                <form id="form-v-angle" class="form-grid six">
+                  <div class="field"><label>v₁x</label><input type="number" step="any" id="A2_v1x" placeholder="1"></div>
+                  <div class="field"><label>v₁y</label><input type="number" step="any" id="A2_v1y" placeholder="1"></div>
+                  <div class="field"><label>v₂x</label><input type="number" step="any" id="A2_v2x" placeholder="1"></div>
+                  <div class="field"><label>v₂y</label><input type="number" step="any" id="A2_v2y" placeholder="0"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-v-angle"></div>
+                <div class="explain" id="exp-v-angle"></div>
+              </div>
+            </div>
+
+            <!-- Коллинеарность -->
+            <div class="card" id="card-v-coll">
+              <h3>Проверка коллинеарности векторов</h3>
+              <div class="content">
+                <form id="form-v-coll" class="form-grid six">
+                  <div class="field"><label>v₁x</label><input type="number" step="any" id="C_v1x" placeholder="2"></div>
+                  <div class="field"><label>v₁y</label><input type="number" step="any" id="C_v1y" placeholder="-1"></div>
+                  <div class="field"><label>v₂x</label><input type="number" step="any" id="C_v2x" placeholder="-4"></div>
+                  <div class="field"><label>v₂y</label><input type="number" step="any" id="C_v2y" placeholder="2"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Проверить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-v-coll"></div>
+                <div class="explain" id="exp-v-coll"></div>
+              </div>
+            </div>
+
+            <!-- Перпендикулярность -->
+            <div class="card" id="card-v-perp">
+              <h3>Проверка перпендикулярности векторов</h3>
+              <div class="content">
+                <form id="form-v-perp" class="form-grid six">
+                  <div class="field"><label>v₁x</label><input type="number" step="any" id="P_v1x" placeholder="1"></div>
+                  <div class="field"><label>v₁y</label><input type="number" step="any" id="P_v1y" placeholder="0"></div>
+                  <div class="field"><label>v₂x</label><input type="number" step="any" id="P_v2x" placeholder="0"></div>
+                  <div class="field"><label>v₂y</label><input type="number" step="any" id="P_v2y" placeholder="1"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Проверить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-v-perp"></div>
+                <div class="explain" id="exp-v-perp"></div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Координаты -->
-      <section id="coordinates" class="card tab-panel" role="tabpanel" aria-labelledby="tab-coordinates">
-        <div class="panel-grid">
-          <div class="panel-left">
-            <div class="form-row">
-              <label for="coord-operation">Операция</label>
-              <select id="coord-operation" class="select" title="Выберите операцию с точками и прямыми">
-                <option value="distance">Расстояние между двумя точками</option>
-                <option value="midpoint">Середина отрезка</option>
-                <option value="divide_ratio">Деление отрезка в заданном отношении</option>
-                <option value="triangle_area">Площадь треугольника по трём точкам</option>
-                <option value="centroid">Центроид треугольника</option>
-                <option value="line_through_two_points">Уравнение прямой через две точки</option>
-                <option value="line_point_direction">Уравнение прямой через точку и направляющий вектор</option>
-                <option value="line_point_perp_vector">Уравнение прямой через точку перпендикулярно вектору</option>
-                <option value="line_intercepts">Уравнение прямой в отрезках</option>
-                <option value="line_slope">Уравнение прямой с угловым коэффициентом</option>
-                <option value="lines_parallel">Параллельны ли две прямые</option>
-                <option value="lines_perp">Перпендикулярны ли две прямые</option>
-                <option value="lines_intersection">Точка пересечения двух прямых</option>
-                <option value="lines_angle">Угол между двумя прямыми</option>
-              </select>
-            </div>
-
-            <div id="coord-inputs" class="inputs"></div>
-
-            <div class="actions">
-              <button id="coord-calc" class="btn primary" title="Выполнить вычисление (Enter)">Вычислить</button>
-              <button id="coord-reset" class="btn" title="Очистить форму">Сбросить</button>
-            </div>
-
-            <div class="explain">
-              <h3>Формулы и объяснение</h3>
-              <div id="coord-formula" class="formula" aria-live="polite"></div>
-              <div id="coord-explain" class="explain-text" aria-live="polite"></div>
-            </div>
-
-            <div class="result">
-              <h3>Результат</h3>
-              <div id="coord-result" class="result-text" aria-live="polite" role="status"></div>
-            </div>
+      <aside class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Координатная плоскость</div>
+          <div class="legend">
+            <span><i style="background:#22d3ee"></i> основной</span>
+            <span><i style="background:#60a5fa"></i> вторичный</span>
+            <span><i style="background:#34d399"></i> результат</span>
           </div>
-          <div class="panel-right">
-            <canvas id="coord-canvas" width="800" height="520" aria-label="Плоскость для визуализации точек и прямых" title="Координатная плоскость. Изменяйте размер окна для обновления масштаба."></canvas>
-            <div class="legend">
-              <span class="chip chip-u">A/B/C</span>
-              <span class="chip chip-v">D/E/F</span>
-              <span class="chip chip-res">результат</span>
-              <span class="chip chip-aux">дополн.</span>
+        </div>
+        <div class="panel-body sticky-tools">
+          <div class="toolbar">
+            <button class="btn" id="btn-clear-canvas" title="Очистить рисунок">Очистить плоскость</button>
+            <button class="btn secondary" id="btn-reset-view" title="Сброс масштаба и смещения">Сбросить вид</button>
+            <label class="switch" title="Если включено — перед отрисовкой будем очищать полотно">
+              <input type="checkbox" id="chk-autoclear" checked>
+              <span>Очищать перед отрисовкой</span>
+            </label>
+          </div>
+          <canvas id="plane" width="800" height="500" aria-label="Координатная плоскость"></canvas>
+          <div class="note">Мышь: колесо — масштаб, перетаскивание — панорама. Двойной щелчок — центрировать.</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="layout" style="margin-top:16px;">
+      <section class="panel" id="coords">
+        <div class="panel-header">
+          <div class="panel-title">Калькулятор координат и прямых</div>
+          <div class="pill">Текстовые формулы рендерятся через MathJax</div>
+        </div>
+        <div class="panel-body">
+          <div class="cards">
+            <!-- Расстояние между двумя точками -->
+            <div class="card">
+              <h3>Расстояние между двумя точками</h3>
+              <div class="content">
+                <form id="form-dist" class="form-grid six">
+                  <div class="field"><label>A<sub>x</sub></label><input type="number" step="any" id="dist_ax" placeholder="0"></div>
+                  <div class="field"><label>A<sub>y</sub></label><input type="number" step="any" id="dist_ay" placeholder="0"></div>
+                  <div class="field"><label>B<sub>x</sub></label><input type="number" step="any" id="dist_bx" placeholder="3"></div>
+                  <div class="field"><label>B<sub>y</sub></label><input type="number" step="any" id="dist_by" placeholder="4"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-dist"></div>
+                <div class="explain" id="exp-dist"></div>
+              </div>
             </div>
+
+            <!-- Середина отрезка -->
+            <div class="card">
+              <h3>Середина отрезка</h3>
+              <div class="content">
+                <form id="form-mid" class="form-grid six">
+                  <div class="field"><label>A<sub>x</sub></label><input type="number" step="any" id="mid_ax" placeholder="0"></div>
+                  <div class="field"><label>A<sub>y</sub></label><input type="number" step="any" id="mid_ay" placeholder="0"></div>
+                  <div class="field"><label>B<sub>x</sub></label><input type="number" step="any" id="mid_bx" placeholder="3"></div>
+                  <div class="field"><label>B<sub>y</sub></label><input type="number" step="any" id="mid_by" placeholder="4"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-mid"></div>
+                <div class="explain" id="exp-mid"></div>
+              </div>
+            </div>
+
+            <!-- Деление отрезка в отношении m:n -->
+            <div class="card">
+              <h3>Деление отрезка в отношении m:n</h3>
+              <div class="content">
+                <form id="form-ratio" class="form-grid auto-fit">
+                  <div class="field"><label>A<sub>x</sub></label><input type="number" step="any" id="ratio_ax" placeholder="0"></div>
+                  <div class="field"><label>A<sub>y</sub></label><input type="number" step="any" id="ratio_ay" placeholder="0"></div>
+                  <div class="field"><label>B<sub>x</sub></label><input type="number" step="any" id="ratio_bx" placeholder="6"></div>
+                  <div class="field"><label>B<sub>y</sub></label><input type="number" step="any" id="ratio_by" placeholder="3"></div>
+                  <div class="field"><label>m</label><input type="number" step="any" id="ratio_m" placeholder="1"></div>
+                  <div class="field"><label>n</label><input type="number" step="any" id="ratio_n" placeholder="2"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-ratio"></div>
+                <div class="explain" id="exp-ratio"></div>
+              </div>
+            </div>
+
+            <!-- Площадь треугольника -->
+            <div class="card">
+              <h3>Площадь треугольника по трём точкам</h3>
+              <div class="content">
+                <form id="form-area" class="form-grid six">
+                  <div class="field"><label>A<sub>x</sub></label><input type="number" step="any" id="area_ax" placeholder="0"></div>
+                  <div class="field"><label>A<sub>y</sub></label><input type="number" step="any" id="area_ay" placeholder="0"></div>
+                  <div class="field"><label>B<sub>x</sub></label><input type="number" step="any" id="area_bx" placeholder="4"></div>
+                  <div class="field"><label>B<sub>y</sub></label><input type="number" step="any" id="area_by" placeholder="0"></div>
+                  <div class="field"><label>C<sub>x</sub></label><input type="number" step="any" id="area_cx" placeholder="1"></div>
+                  <div class="field"><label>C<sub>y</sub></label><input type="number" step="any" id="area_cy" placeholder="3"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-area"></div>
+                <div class="explain" id="exp-area"></div>
+              </div>
+            </div>
+
+            <!-- Центроид треугольника -->
+            <div class="card">
+              <h3>Центроид треугольника</h3>
+              <div class="content">
+                <form id="form-centroid" class="form-grid six">
+                  <div class="field"><label>A<sub>x</sub></label><input type="number" step="any" id="cent_ax" placeholder="0"></div>
+                  <div class="field"><label>A<sub>y</sub></label><input type="number" step="any" id="cent_ay" placeholder="0"></div>
+                  <div class="field"><label>B<sub>x</sub></label><input type="number" step="any" id="cent_bx" placeholder="4"></div>
+                  <div class="field"><label>B<sub>y</sub></label><input type="number" step="any" id="cent_by" placeholder="0"></div>
+                  <div class="field"><label>C<sub>x</sub></label><input type="number" step="any" id="cent_cx" placeholder="1"></div>
+                  <div class="field"><label>C<sub>y</sub></label><input type="number" step="any" id="cent_cy" placeholder="3"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-centroid"></div>
+                <div class="explain" id="exp-centroid"></div>
+              </div>
+            </div>
+
+            <!-- Прямая по двум точкам -->
+            <div class="card">
+              <h3>Уравнение прямой через две точки</h3>
+              <div class="content">
+                <form id="form-line-2pts" class="form-grid six">
+                  <div class="field"><label>A<sub>x</sub></label><input type="number" step="any" id="l2_ax" placeholder="0"></div>
+                  <div class="field"><label>A<sub>y</sub></label><input type="number" step="any" id="l2_ay" placeholder="0"></div>
+                  <div class="field"><label>B<sub>x</sub></label><input type="number" step="any" id="l2_bx" placeholder="2"></div>
+                  <div class="field"><label>B<sub>y</sub></label><input type="number" step="any" id="l2_by" placeholder="3"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Построить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-line-2pts"></div>
+                <div class="explain" id="exp-line-2pts"></div>
+              </div>
+            </div>
+
+            <!-- Прямая через точку и направляющий вектор -->
+            <div class="card">
+              <h3>Прямая через точку и направляющий вектор</h3>
+              <div class="content">
+                <form id="form-line-point-dir" class="form-grid six">
+                  <div class="field"><label>x₀</label><input type="number" step="any" id="lpd_x0" placeholder="1"></div>
+                  <div class="field"><label>y₀</label><input type="number" step="any" id="lpd_y0" placeholder="1"></div>
+                  <div class="field"><label>v<sub>x</sub></label><input type="number" step="any" id="lpd_vx" placeholder="2"></div>
+                  <div class="field"><label>v<sub>y</sub></label><input type="number" step="any" id="lpd_vy" placeholder="1"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Построить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-line-point-dir"></div>
+                <div class="explain" id="exp-line-point-dir"></div>
+              </div>
+            </div>
+
+            <!-- Прямая через точку перпендикулярно вектору -->
+            <div class="card">
+              <h3>Прямая через точку перпендикулярно заданному вектору</h3>
+              <div class="content">
+                <form id="form-line-point-perpvec" class="form-grid six">
+                  <div class="field"><label>x₀</label><input type="number" step="any" id="lpp_x0" placeholder="1"></div>
+                  <div class="field"><label>y₀</label><input type="number" step="any" id="lpp_y0" placeholder="0"></div>
+                  <div class="field"><label>v<sub>x</sub></label><input type="number" step="any" id="lpp_vx" placeholder="1"></div>
+                  <div class="field"><label>v<sub>y</sub></label><input type="number" step="any" id="lpp_vy" placeholder="2"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Построить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-line-point-perpvec"></div>
+                <div class="explain" id="exp-line-point-perpvec"></div>
+              </div>
+            </div>
+
+            <!-- Уравнение прямой в отрезках -->
+            <div class="card">
+              <h3>Уравнение прямой в отрезках</h3>
+              <div class="content">
+                <form id="form-line-intercepts" class="form-grid four">
+                  <div class="field"><label>a (пересечение с Ox)</label><input type="number" step="any" id="li_a" placeholder="3"></div>
+                  <div class="field"><label>b (пересечение с Oy)</label><input type="number" step="any" id="li_b" placeholder="2"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Построить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-line-intercepts"></div>
+                <div class="explain" id="exp-line-intercepts"></div>
+              </div>
+            </div>
+
+            <!-- Уравнение y = kx + b -->
+            <div class="card">
+              <h3>Уравнение прямой с угловым коэффициентом</h3>
+              <div class="content">
+                <form id="form-line-kb" class="form-grid four">
+                  <div class="field"><label>k</label><input type="number" step="any" id="lkb_k" placeholder="1"></div>
+                  <div class="field"><label>b</label><input type="number" step="any" id="lkb_b" placeholder="0"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Построить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-line-kb"></div>
+                <div class="explain" id="exp-line-kb"></div>
+              </div>
+            </div>
+
+            <!-- Параллельность прямых -->
+            <div class="card">
+              <h3>Параллельны ли две прямые?</h3>
+              <div class="content">
+                <form id="form-parallel" class="form-grid six">
+                  <div class="field"><label>A₁</label><input type="number" step="any" id="par_A1" placeholder="1"></div>
+                  <div class="field"><label>B₁</label><input type="number" step="any" id="par_B1" placeholder="-2"></div>
+                  <div class="field"><label>C₁</label><input type="number" step="any" id="par_C1" placeholder="3"></div>
+                  <div class="field"><label>A₂</label><input type="number" step="any" id="par_A2" placeholder="2"></div>
+                  <div class="field"><label>B₂</label><input type="number" step="any" id="par_B2" placeholder="-4"></div>
+                  <div class="field"><label>C₂</label><input type="number" step="any" id="par_C2" placeholder="1"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Проверить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-parallel"></div>
+                <div class="explain" id="exp-parallel"></div>
+              </div>
+            </div>
+
+            <!-- Перпендикулярность прямых -->
+            <div class="card">
+              <h3>Перпендикулярны ли две прямые?</h3>
+              <div class="content">
+                <form id="form-perp-lines" class="form-grid six">
+                  <div class="field"><label>A₁</label><input type="number" step="any" id="pl_A1" placeholder="1"></div>
+                  <div class="field"><label>B₁</label><input type="number" step="any" id="pl_B1" placeholder="0"></div>
+                  <div class="field"><label>C₁</label><input type="number" step="any" id="pl_C1" placeholder="0"></div>
+                  <div class="field"><label>A₂</label><input type="number" step="any" id="pl_A2" placeholder="0"></div>
+                  <div class="field"><label>B₂</label><input type="number" step="any" id="pl_B2" placeholder="1"></div>
+                  <div class="field"><label>C₂</label><input type="number" step="any" id="pl_C2" placeholder="0"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Проверить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-perp-lines"></div>
+                <div class="explain" id="exp-perp-lines"></div>
+              </div>
+            </div>
+
+            <!-- Точка пересечения двух прямых -->
+            <div class="card">
+              <h3>Точка пересечения двух прямых</h3>
+              <div class="content">
+                <form id="form-intersect" class="form-grid six">
+                  <div class="field"><label>A₁</label><input type="number" step="any" id="is_A1" placeholder="1"></div>
+                  <div class="field"><label>B₁</label><input type="number" step="any" id="is_B1" placeholder="-1"></div>
+                  <div class="field"><label>C₁</label><input type="number" step="any" id="is_C1" placeholder="0"></div>
+                  <div class="field"><label>A₂</label><input type="number" step="any" id="is_A2" placeholder="1"></div>
+                  <div class="field"><label>B₂</label><input type="number" step="any" id="is_B2" placeholder="1"></div>
+                  <div class="field"><label>C₂</label><input type="number" step="any" id="is_C2" placeholder="-4"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Найти и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-intersect"></div>
+                <div class="explain" id="exp-intersect"></div>
+              </div>
+            </div>
+
+            <!-- Угол между двумя прямыми -->
+            <div class="card">
+              <h3>Угол между двумя прямыми</h3>
+              <div class="content">
+                <form id="form-angle-lines" class="form-grid six">
+                  <div class="field"><label>A₁</label><input type="number" step="any" id="al_A1" placeholder="1"></div>
+                  <div class="field"><label>B₁</label><input type="number" step="any" id="al_B1" placeholder="-1"></div>
+                  <div class="field"><label>C₁</label><input type="number" step="any" id="al_C1" placeholder="0"></div>
+                  <div class="field"><label>A₂</label><input type="number" step="any" id="al_A2" placeholder="1"></div>
+                  <div class="field"><label>B₂</label><input type="number" step="any" id="al_B2" placeholder="1"></div>
+                  <div class="field"><label>C₂</label><input type="number" step="any" id="al_C2" placeholder="-4"></div>
+                  <div class="btn-row"><button type="submit" class="btn">Вычислить и нарисовать</button></div>
+                </form>
+                <div class="result" id="res-angle-lines"></div>
+                <div class="explain" id="exp-angle-lines"></div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
-    </main>
 
-    <footer class="footer container">
-      <p>Все вычисления выполняются в браузере. Формулы отображаются с помощью MathJax.</p>
-    </footer>
+      <aside class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Справка и подсказки</div>
+        </div>
+        <div class="panel-body">
+          <div class="kpi" style="margin-bottom:8px;">
+            <div class="tile"><div class="label">Точность вычислений</div><div class="value">ε = 1e−9</div></div>
+            <div class="tile"><div class="label">Отрисовка</div><div class="value">Canvas 2D</div></div>
+          </div>
+          <div class="note">
+            • Числа можно вводить с точкой или запятой. <br/>
+            • Поля поддерживают колесо мыши (+Shift для шага 10×). <br/>
+            • Формулы отображаются в виде TeX и автоматически рендерятся. <br/>
+            • Чтобы очистить плоскость — используйте кнопку «Очистить плоскость» или включите переключатель «Очищать перед отрисовкой». <br/>
+            • Подсказки появляются при наведении на значки информации.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
 
-    <script type="module" src="./main.js"></script>
-  </body>
+  <script>
+    // ==========================
+    // ЧИСЛОВЫЕ И ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+    // ==========================
+
+    const EPS = 1e-9;
+
+    function parseNumber(value) {
+      if (typeof value === 'number') return value;
+      if (typeof value !== 'string') return NaN;
+      const normalized = value.replace(',', '.');
+      return Number(normalized);
+    }
+
+    function fmt(num, digits = 6) {
+      if (!isFinite(num)) return String(num);
+      const s = Number(num).toFixed(digits);
+      // trim trailing zeros
+      return s.replace(/\.0+$/, '').replace(/(\.\d*?[1-9])0+$/, '$1');
+    }
+
+    function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+    function approxEqual(a, b, eps = EPS) { return Math.abs(a - b) <= eps; }
+
+    function vectorLength(x, y) { return Math.hypot(x, y); }
+
+    function vectorDot(ax, ay, bx, by) { return ax * bx + ay * by; }
+
+    function vectorCross(ax, ay, bx, by) { return ax * by - ay * bx; }
+
+    function ensureMathJaxTypeset() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        return window.MathJax.typesetPromise();
+      }
+      return Promise.resolve();
+    }
+
+    function setHTML(id, html) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      }
+    }
+
+    function attachNumericScrollStep() {
+      // Улучшение UX: колесо мыши на input[type=number] изменяет значение с шагом (с учётом Shift)
+      document.querySelectorAll('input[type="number"]').forEach((input) => {
+        input.addEventListener('wheel', (e) => {
+          if (document.activeElement !== input) return; // только для активного поля
+          e.preventDefault();
+          const stepAttr = input.getAttribute('step');
+          const baseStep = stepAttr && stepAttr !== 'any' ? parseNumber(stepAttr) : 1;
+          const step = (e.shiftKey ? baseStep * 10 : baseStep) * (e.deltaY < 0 ? 1 : -1);
+          const val = parseNumber(input.value || '0');
+          const next = val + step;
+          input.value = String(next);
+          const evt = new Event('input', { bubbles: true });
+          input.dispatchEvent(evt);
+        }, { passive: false });
+      });
+    }
+
+    function showError(id, message) {
+      setHTML(id, `<span style="color: var(--danger); font-weight:600;">${message}</span>`);
+    }
+
+    // ==========================
+    // КООРДИНАТНАЯ ПЛОСКОСТЬ (CANVAS)
+    // ==========================
+
+    const canvas = document.getElementById('plane');
+    const ctx = canvas.getContext('2d');
+    let devicePixelRatioScale = 1;
+
+    const view = {
+      scale: 50,        // пикселей на 1 единицу
+      offsetX: 0,       // панорамирование по x (в пикселях)
+      offsetY: 0,       // панорамирование по y (в пикселях)
+      bg: '#060a12',
+      gridMain: 'rgba(255,255,255,0.06)',
+      gridSub: 'rgba(255,255,255,0.03)',
+      axis: 'rgba(255,255,255,0.35)',
+      origin: '#fbbf24',
+      vector1: '#22d3ee',
+      vector2: '#60a5fa',
+      result: '#34d399',
+      point: '#e5e7eb',
+      line: '#c084fc',
+    };
+
+    function resizeCanvasToDisplaySize() {
+      const dpr = window.devicePixelRatio || 1;
+      const cssWidth = canvas.clientWidth;
+      const cssHeight = canvas.clientHeight;
+      const needResize = canvas.width !== Math.floor(cssWidth * dpr) || canvas.height !== Math.floor(cssHeight * dpr);
+      if (needResize) {
+        canvas.width = Math.floor(cssWidth * dpr);
+        canvas.height = Math.floor(cssHeight * dpr);
+        devicePixelRatioScale = dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      return needResize;
+    }
+
+    function resetView() {
+      view.scale = 50;
+      view.offsetX = canvas.clientWidth / 2;
+      view.offsetY = canvas.clientHeight / 2;
+      drawGrid();
+    }
+
+    function worldToScreen(x, y) {
+      return {
+        sx: x * view.scale + view.offsetX,
+        sy: -y * view.scale + view.offsetY,
+      };
+    }
+
+    function screenToWorld(sx, sy) {
+      return {
+        x: (sx - view.offsetX) / view.scale,
+        y: -(sy - view.offsetY) / view.scale,
+      };
+    }
+
+    function clearCanvas() {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+
+    function drawGrid() {
+      resizeCanvasToDisplaySize();
+      clearCanvas();
+
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+
+      // фон
+      ctx.fillStyle = view.bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // шаг сетки
+      const step = view.scale; // 1 единица
+      const subStep = step / 2;
+
+      // вертикальные линии
+      ctx.strokeStyle = view.gridSub;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = view.offsetX % subStep; x <= w; x += subStep) {
+        ctx.moveTo(Math.round(x) + 0.5, 0);
+        ctx.lineTo(Math.round(x) + 0.5, h);
+      }
+      ctx.stroke();
+
+      // горизонтальные линии
+      ctx.beginPath();
+      for (let y = view.offsetY % subStep; y <= h; y += subStep) {
+        ctx.moveTo(0, Math.round(y) + 0.5);
+        ctx.lineTo(w, Math.round(y) + 0.5);
+      }
+      ctx.stroke();
+
+      // основные линии через 1
+      ctx.strokeStyle = view.gridMain;
+      ctx.beginPath();
+      for (let x = view.offsetX % step; x <= w; x += step) {
+        ctx.moveTo(Math.round(x) + 0.5, 0);
+        ctx.lineTo(Math.round(x) + 0.5, h);
+      }
+      for (let y = view.offsetY % step; y <= h; y += step) {
+        ctx.moveTo(0, Math.round(y) + 0.5);
+        ctx.lineTo(w, Math.round(y) + 0.5);
+      }
+      ctx.stroke();
+
+      // Оси
+      ctx.strokeStyle = view.axis;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      // Oy (x = 0)
+      const x0 = Math.round(view.offsetX) + 0.5;
+      ctx.moveTo(x0, 0);
+      ctx.lineTo(x0, h);
+      // Ox (y = 0)
+      const y0 = Math.round(view.offsetY) + 0.5;
+      ctx.moveTo(0, y0);
+      ctx.lineTo(w, y0);
+      ctx.stroke();
+
+      // начало координат
+      ctx.fillStyle = view.origin;
+      ctx.beginPath();
+      ctx.arc(x0, y0, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function ensureAutoClear() {
+      const chk = document.getElementById('chk-autoclear');
+      if (chk && chk.checked) drawGrid();
+    }
+
+    function drawPoint(x, y, color = view.point, label = '') {
+      const { sx, sy } = worldToScreen(x, y);
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 4, 0, Math.PI * 2);
+      ctx.fill();
+      if (label) {
+        ctx.font = '12px Inter, system-ui';
+        ctx.fillStyle = color;
+        ctx.textBaseline = 'top';
+        ctx.fillText(label, sx + 6, sy + 6);
+      }
+    }
+
+    function drawSegment(ax, ay, bx, by, color = view.vector2) {
+      const A = worldToScreen(ax, ay);
+      const B = worldToScreen(bx, by);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(A.sx, A.sy);
+      ctx.lineTo(B.sx, B.sy);
+      ctx.stroke();
+    }
+
+    function drawArrow(ax, ay, bx, by, color = view.vector1) {
+      const A = worldToScreen(ax, ay);
+      const B = worldToScreen(bx, by);
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2;
+
+      // линия
+      ctx.beginPath();
+      ctx.moveTo(A.sx, A.sy);
+      ctx.lineTo(B.sx, B.sy);
+      ctx.stroke();
+
+      // наконечник
+      const angle = Math.atan2(B.sy - A.sy, B.sx - A.sx);
+      const headLen = 10;
+      ctx.beginPath();
+      ctx.moveTo(B.sx, B.sy);
+      ctx.lineTo(B.sx - headLen * Math.cos(angle - Math.PI / 8), B.sy - headLen * Math.sin(angle - Math.PI / 8));
+      ctx.lineTo(B.sx - headLen * Math.cos(angle + Math.PI / 8), B.sy - headLen * Math.sin(angle + Math.PI / 8));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawPolygon(points, color = view.vector2, fillAlpha = 0.12) {
+      if (!points || points.length < 3) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      const p0 = worldToScreen(points[0].x, points[0].y);
+      ctx.moveTo(p0.sx, p0.sy);
+      for (let i = 1; i < points.length; i++) {
+        const p = worldToScreen(points[i].x, points[i].y);
+        ctx.lineTo(p.sx, p.sy);
+      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = color.replace('rgb', 'rgba').replace(')', `, ${fillAlpha})`);
+      // Fallback for hex colors: apply simple globalAlpha
+      if (!ctx.fillStyle.startsWith('rgba')) {
+        ctx.save();
+        ctx.globalAlpha = fillAlpha;
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      } else {
+        ctx.fill();
+      }
+    }
+
+    function drawLineGeneral(A, B, C, color = view.line) {
+      // Рисуем бесконечную прямую Ax + By + C = 0 в пределах видимой области
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const leftTop = screenToWorld(0, 0);
+      const rightBottom = screenToWorld(w, h);
+      const minX = leftTop.x, maxX = rightBottom.x;
+      const minY = rightBottom.y, maxY = leftTop.y;
+
+      let pts = [];
+      if (Math.abs(B) > EPS) {
+        // две точки по границам x
+        const y1 = (-A * minX - C) / B;
+        const y2 = (-A * maxX - C) / B;
+        pts.push({ x: minX, y: y1 }, { x: maxX, y: y2 });
+      } else if (Math.abs(A) > EPS) {
+        const x = -C / A;
+        pts.push({ x, y: minY }, { x, y: maxY });
+      } else {
+        return; // вырожденная
+      }
+
+      const P = worldToScreen(pts[0].x, pts[0].y);
+      const Q = worldToScreen(pts[1].x, pts[1].y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(P.sx, P.sy);
+      ctx.lineTo(Q.sx, Q.sy);
+      ctx.stroke();
+    }
+
+    // Навигация: масштаб, панорамирование
+    (function initInteractions() {
+      let dragging = false;
+      let last = { x: 0, y: 0 };
+
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = -e.deltaY; // вверх — увеличиваем
+        const zoomFactor = Math.exp(delta * 0.0015);
+        const mouseX = e.offsetX;
+        const mouseY = e.offsetY;
+
+        // масштабирование вокруг точки курсора
+        const before = screenToWorld(mouseX, mouseY);
+        view.scale = clamp(view.scale * zoomFactor, 10, 400);
+        const after = screenToWorld(mouseX, mouseY);
+        view.offsetX += (before.x - after.x) * view.scale;
+        view.offsetY -= (before.y - after.y) * view.scale;
+        drawGrid();
+      }, { passive: false });
+
+      canvas.addEventListener('mousedown', (e) => {
+        dragging = true;
+        last = { x: e.clientX, y: e.clientY };
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - last.x;
+        const dy = e.clientY - last.y;
+        last = { x: e.clientX, y: e.clientY };
+        view.offsetX += dx;
+        view.offsetY += dy;
+        drawGrid();
+      });
+      window.addEventListener('mouseup', () => dragging = false);
+
+      canvas.addEventListener('dblclick', () => {
+        resetView();
+      });
+
+      window.addEventListener('resize', () => {
+        if (resizeCanvasToDisplaySize()) {
+          drawGrid();
+        }
+      });
+    })();
+
+    // ==========================
+    // БИЗНЕС-ЛОГИКА ОПЕРАЦИЙ
+    // ==========================
+
+    function onReady(fn) {
+      if (document.readyState !== 'loading') fn();
+      else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    function formatGeneralEquation(A, B, C) {
+      // Строка вида: Ax + By + C = 0
+      const parts = [];
+      if (!approxEqual(A, 0)) parts.push(`${fmt(A)}x`);
+      if (!approxEqual(B, 0)) parts.push(`${B >= 0 ? '+' : ''}${fmt(B)}y`);
+      if (!approxEqual(C, 0)) parts.push(`${C >= 0 ? '+' : ''}${fmt(C)}`);
+      return parts.join(' ') + ' = 0';
+    }
+
+    function formatSlopeIntercept(A, B, C) {
+      // из Ax + By + C = 0 -> y = kx + b (если B != 0)
+      if (approxEqual(B, 0)) return 'невозможно (вертикальная прямая)';
+      const k = -A / B;
+      const b = -C / B;
+      return `y = ${fmt(k)}x ${b >= 0 ? '+' : '-'} ${fmt(Math.abs(b))}`;
+    }
+
+    function formatParametric(x0, y0, vx, vy) {
+      return `x = ${fmt(x0)} + t\,${fmt(vx)},\; y = ${fmt(y0)} + t\,${fmt(vy)}`;
+    }
+
+    function autoclearIfNeeded() {
+      const chk = document.getElementById('chk-autoclear');
+      if (chk && chk.checked) drawGrid();
+    }
+
+    onReady(() => {
+      // начальная отрисовка
+      resetView();
+      attachNumericScrollStep();
+
+      // кнопки холста
+      document.getElementById('btn-clear-canvas').addEventListener('click', () => drawGrid());
+      document.getElementById('btn-reset-view').addEventListener('click', resetView);
+
+      // ==========================
+      // Векторы
+      // ==========================
+
+      // Вектор по двум точкам
+      document.getElementById('form-v-from-points').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const Ax = parseNumber(document.getElementById('A_x').value);
+        const Ay = parseNumber(document.getElementById('A_y').value);
+        const Bx = parseNumber(document.getElementById('B_x').value);
+        const By = parseNumber(document.getElementById('B_y').value);
+        const vx = Bx - Ax;
+        const vy = By - Ay;
+        setHTML('res-v-from-points', `<strong>\n          \\( \n          \\overrightarrow{AB} = ( ${fmt(vx)},\, ${fmt(vy)} ) \\)\n        </strong>`);
+        setHTML('exp-v-from-points', `\n          <div class="formula">\\( \\overrightarrow{AB} = (x_B - x_A,\ y_B - y_A) \\)</div>\n          Подставим значения: \\(( ${fmt(Bx)} - ${fmt(Ax)},\; ${fmt(By)} - ${fmt(Ay)} ) = ( ${fmt(vx)},\; ${fmt(vy)} )\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(Ax, Ay, view.point, 'A');
+        drawPoint(Bx, By, view.point, 'B');
+        drawArrow(Ax, Ay, Bx, By, view.vector1);
+      });
+      document.querySelector('#form-v-from-points [data-action="clear"]').addEventListener('click', () => drawGrid());
+
+      // Длина вектора
+      document.getElementById('form-v-length').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const vx = parseNumber(document.getElementById('L_vx').value);
+        const vy = parseNumber(document.getElementById('L_vy').value);
+        const len = vectorLength(vx, vy);
+        setHTML('res-v-length', `<strong>\\( |\\vec v| = ${fmt(len)} \\)</strong>`);
+        setHTML('exp-v-length', `\n          <div class="formula">\\( |\\vec v| = \\sqrt{v_x^2 + v_y^2} \\)</div>\n          Подставим: \\(|\\vec v| = \\sqrt{(${fmt(vx)})^2 + (${fmt(vy)})^2} = ${fmt(len)}\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, vx, vy, view.vector1);
+      });
+
+      // Сложение векторов
+      document.getElementById('form-v-add').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v1x = parseNumber(document.getElementById('S_v1x').value);
+        const v1y = parseNumber(document.getElementById('S_v1y').value);
+        const v2x = parseNumber(document.getElementById('S_v2x').value);
+        const v2y = parseNumber(document.getElementById('S_v2y').value);
+        const sx = v1x + v2x;
+        const sy = v1y + v2y;
+        setHTML('res-v-add', `<strong>\\( \\vec v_1 + \\vec v_2 = ( ${fmt(sx)},\, ${fmt(sy)} ) \\)</strong>`);
+        setHTML('exp-v-add', `\n          <div class="formula">\\( (x_1, y_1) + (x_2, y_2) = (x_1 + x_2,\ y_1 + y_2) \\)</div>\n          Подставим: \\( (${fmt(v1x)}, ${fmt(v1y)}) + (${fmt(v2x)}, ${fmt(v2y)}) = (${fmt(sx)}, ${fmt(sy)}) \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, v1x, v1y, '#60a5fa');
+        drawArrow(0, 0, v2x, v2y, '#22d3ee');
+        drawArrow(0, 0, sx, sy, view.result);
+      });
+
+      // Умножение вектора на число
+      document.getElementById('form-v-scale').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const vx = parseNumber(document.getElementById('M_vx').value);
+        const vy = parseNumber(document.getElementById('M_vy').value);
+        const k = parseNumber(document.getElementById('M_k').value);
+        const rx = vx * k;
+        const ry = vy * k;
+        setHTML('res-v-scale', `<strong>\\( k \\cdot ( ${fmt(vx)},\, ${fmt(vy)} ) = ( ${fmt(rx)},\, ${fmt(ry)} ) \\)</strong>`);
+        setHTML('exp-v-scale', `\n          <div class="formula">\\( k \\cdot (x, y) = (k x,\ k y) \\)</div>\n          Подставим: \\(${fmt(k)} \\cdot (${fmt(vx)}, ${fmt(vy)}) = (${fmt(rx)}, ${fmt(ry)})\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, vx, vy, '#60a5fa');
+        drawArrow(0, 0, rx, ry, view.result);
+      });
+
+      // Скалярное произведение
+      document.getElementById('form-v-dot').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v1x = parseNumber(document.getElementById('D_v1x').value);
+        const v1y = parseNumber(document.getElementById('D_v1y').value);
+        const v2x = parseNumber(document.getElementById('D_v2x').value);
+        const v2y = parseNumber(document.getElementById('D_v2y').value);
+        const dot = vectorDot(v1x, v1y, v2x, v2y);
+        setHTML('res-v-dot', `<strong>\\( ( ${fmt(v1x)}, ${fmt(v1y)} ) \\cdot ( ${fmt(v2x)}, ${fmt(v2y)} ) = ${fmt(dot)} \\)</strong>`);
+        setHTML('exp-v-dot', `\n          <div class="formula">\\( \\vec v \\cdot \\vec w = v_x w_x + v_y w_y \\)</div>\n          Подставим: \\(${fmt(v1x)} \\cdot ${fmt(v2x)} + ${fmt(v1y)} \\cdot ${fmt(v2y)} = ${fmt(dot)} \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, v1x, v1y, '#60a5fa');
+        drawArrow(0, 0, v2x, v2y, '#22d3ee');
+      });
+
+      // Угол между векторами
+      document.getElementById('form-v-angle').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v1x = parseNumber(document.getElementById('A2_v1x').value);
+        const v1y = parseNumber(document.getElementById('A2_v1y').value);
+        const v2x = parseNumber(document.getElementById('A2_v2x').value);
+        const v2y = parseNumber(document.getElementById('A2_v2y').value);
+
+        const n1 = vectorLength(v1x, v1y);
+        const n2 = vectorLength(v2x, v2y);
+        if (n1 < EPS || n2 < EPS) {
+          showError('res-v-angle', 'Угол не определён для нулевого вектора');
+          setHTML('exp-v-angle', '');
+          return;
+        }
+        let cos = vectorDot(v1x, v1y, v2x, v2y) / (n1 * n2);
+        cos = clamp(cos, -1, 1);
+        const angle = Math.acos(cos);
+        const deg = angle * 180 / Math.PI;
+        setHTML('res-v-angle', `<strong>\\( \\theta = ${fmt(angle)}\,\text{рад} = ${fmt(deg)}^\\circ \\)</strong>`);
+        setHTML('exp-v-angle', `\n          <div class="formula">\\( \\cos \\theta = \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \frac{\\vec v \\cdot \\vec w}{|\\vec v|\\,|\\vec w|} \\)</div>\n          Подставим: \\( \\cos \\theta = \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \frac{${fmt(v1x)}\\cdot${fmt(v2x)} + ${fmt(v1y)}\\cdot${fmt(v2y)}}{${fmt(n1)}\\cdot${fmt(n2)}} = ${fmt(cos)} \\), отсюда \\( \\theta = ${fmt(deg)}^\\circ \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, v1x, v1y, '#60a5fa');
+        drawArrow(0, 0, v2x, v2y, '#22d3ee');
+      });
+
+      // Коллинеарность
+      document.getElementById('form-v-coll').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v1x = parseNumber(document.getElementById('C_v1x').value);
+        const v1y = parseNumber(document.getElementById('C_v1y').value);
+        const v2x = parseNumber(document.getElementById('C_v2x').value);
+        const v2y = parseNumber(document.getElementById('C_v2y').value);
+        const cross = vectorCross(v1x, v1y, v2x, v2y);
+        const isCol = Math.abs(cross) <= EPS * (1 + vectorLength(v1x, v1y) + vectorLength(v2x, v2y));
+        setHTML('res-v-coll', `<strong>${isCol ? 'Коллинеарны' : 'Не коллинеарны'}</strong>`);
+        setHTML('exp-v-coll', `\n          <div class="formula">\\( \\text{Коллинеарны} \\iff v_x w_y - v_y w_x = 0 \\)</div>\n          Вычислим: \\(${fmt(v1x)}\\cdot${fmt(v2y)} - ${fmt(v1y)}\\cdot${fmt(v2x)} = ${fmt(cross)}\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, v1x, v1y, '#60a5fa');
+        drawArrow(0, 0, v2x, v2y, '#22d3ee');
+      });
+
+      // Перпендикулярность
+      document.getElementById('form-v-perp').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v1x = parseNumber(document.getElementById('P_v1x').value);
+        const v1y = parseNumber(document.getElementById('P_v1y').value);
+        const v2x = parseNumber(document.getElementById('P_v2x').value);
+        const v2y = parseNumber(document.getElementById('P_v2y').value);
+        const dot = vectorDot(v1x, v1y, v2x, v2y);
+        const isPerp = Math.abs(dot) <= EPS * (1 + vectorLength(v1x, v1y) + vectorLength(v2x, v2y));
+        setHTML('res-v-perp', `<strong>${isPerp ? 'Перпендикулярны' : 'Не перпендикулярны'}</strong>`);
+        setHTML('exp-v-perp', `\n          <div class="formula">\\( \\text{Перпендикулярны} \\iff \\vec v \\cdot \\vec w = 0 \\)</div>\n          Вычислим: \\(${fmt(v1x)}\\cdot${fmt(v2x)} + ${fmt(v1y)}\\cdot${fmt(v2y)} = ${fmt(dot)}\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawArrow(0, 0, v1x, v1y, '#60a5fa');
+        drawArrow(0, 0, v2x, v2y, '#22d3ee');
+      });
+
+      // ==========================
+      // Координаты и прямые
+      // ==========================
+
+      // Расстояние
+      document.getElementById('form-dist').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ax = parseNumber(document.getElementById('dist_ax').value);
+        const ay = parseNumber(document.getElementById('dist_ay').value);
+        const bx = parseNumber(document.getElementById('dist_bx').value);
+        const by = parseNumber(document.getElementById('dist_by').value);
+        const dx = bx - ax, dy = by - ay;
+        const d = Math.hypot(dx, dy);
+        setHTML('res-dist', `<strong>\\( d = ${fmt(d)} \\)</strong>`);
+        setHTML('exp-dist', `\n          <div class="formula">\\( d(A,B) = \\sqrt{(x_B-x_A)^2 + (y_B-y_A)^2} \\)</div>\n          Подставим: \\(${fmt(dx)}^2 + ${fmt(dy)}^2 = ${fmt(d)}\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(ax, ay, view.point, 'A');
+        drawPoint(bx, by, view.point, 'B');
+        drawSegment(ax, ay, bx, by, view.vector2);
+      });
+
+      // Середина отрезка
+      document.getElementById('form-mid').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ax = parseNumber(document.getElementById('mid_ax').value);
+        const ay = parseNumber(document.getElementById('mid_ay').value);
+        const bx = parseNumber(document.getElementById('mid_bx').value);
+        const by = parseNumber(document.getElementById('mid_by').value);
+        const mx = (ax + bx) / 2;
+        const my = (ay + by) / 2;
+        setHTML('res-mid', `<strong>\\( M(${fmt(mx)},\, ${fmt(my)}) \\)</strong>`);
+        setHTML('exp-mid', `\n          <div class="formula">\\( M = (\\tfrac{x_A + x_B}{2},\\ \\tfrac{y_A + y_B}{2}) \\)</div>\n          Подставим: \\( (\\tfrac{${fmt(ax)} + ${fmt(bx)}}{2},\\ \\tfrac{${fmt(ay)} + ${fmt(by)}}{2}) = (${fmt(mx)}, ${fmt(my)}) \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(ax, ay, view.point, 'A');
+        drawPoint(bx, by, view.point, 'B');
+        drawSegment(ax, ay, bx, by, view.vector2);
+        drawPoint(mx, my, view.result, 'M');
+      });
+
+      // Деление отрезка в отношении m:n (внутреннее)
+      document.getElementById('form-ratio').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ax = parseNumber(document.getElementById('ratio_ax').value);
+        const ay = parseNumber(document.getElementById('ratio_ay').value);
+        const bx = parseNumber(document.getElementById('ratio_bx').value);
+        const by = parseNumber(document.getElementById('ratio_by').value);
+        const m = parseNumber(document.getElementById('ratio_m').value);
+        const n = parseNumber(document.getElementById('ratio_n').value);
+        if (approxEqual(m + n, 0)) {
+          showError('res-ratio', 'Сумма m + n не должна быть равна 0');
+          setHTML('exp-ratio', '');
+          return;
+        }
+        const px = (n * ax + m * bx) / (m + n);
+        const py = (n * ay + m * by) / (m + n);
+        setHTML('res-ratio', `<strong>\\( P(${fmt(px)},\, ${fmt(py)}) \\)</strong>`);
+        setHTML('exp-ratio', `\n          <div class="formula">\\( P = (\\tfrac{n x_A + m x_B}{m+n},\\ \\tfrac{n y_A + m y_B}{m+n}) \\)</div>\n          Подставим: \\( (\\tfrac{${fmt(n)}\\cdot${fmt(ax)} + ${fmt(m)}\\cdot${fmt(bx)}}{${fmt(m+n)}},\\ \\tfrac{${fmt(n)}\\cdot${fmt(ay)} + ${fmt(m)}\\cdot${fmt(by)}}{${fmt(m+n)}}) = (${fmt(px)}, ${fmt(py)}) \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(ax, ay, view.point, 'A');
+        drawPoint(bx, by, view.point, 'B');
+        drawSegment(ax, ay, bx, by, view.vector2);
+        drawPoint(px, py, view.result, 'P');
+      });
+
+      // Площадь треугольника
+      document.getElementById('form-area').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ax = parseNumber(document.getElementById('area_ax').value);
+        const ay = parseNumber(document.getElementById('area_ay').value);
+        const bx = parseNumber(document.getElementById('area_bx').value);
+        const by = parseNumber(document.getElementById('area_by').value);
+        const cx = parseNumber(document.getElementById('area_cx').value);
+        const cy = parseNumber(document.getElementById('area_cy').value);
+        const area = Math.abs(ax*(by-cy) + bx*(cy-ay) + cx*(ay-by)) / 2;
+        setHTML('res-area', `<strong>\\( S = ${fmt(area)} \\)</strong>`);
+        setHTML('exp-area', `\n          <div class="formula">\\( S = \\tfrac{1}{2} | x_1(y_2 - y_3) + x_2(y_3 - y_1) + x_3(y_1 - y_2) | \\)</div>\n          Подстановка даёт значение: \\(${fmt(area)}\\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPolygon([{x:ax,y:ay},{x:bx,y:by},{x:cx,y:cy}], '#60a5fa');
+        drawPoint(ax, ay, view.point, 'A');
+        drawPoint(bx, by, view.point, 'B');
+        drawPoint(cx, cy, view.point, 'C');
+      });
+
+      // Центроид треугольника
+      document.getElementById('form-centroid').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const ax = parseNumber(document.getElementById('cent_ax').value);
+        const ay = parseNumber(document.getElementById('cent_ay').value);
+        const bx = parseNumber(document.getElementById('cent_bx').value);
+        const by = parseNumber(document.getElementById('cent_by').value);
+        const cx = parseNumber(document.getElementById('cent_cx').value);
+        const cy = parseNumber(document.getElementById('cent_cy').value);
+        const gx = (ax + bx + cx) / 3;
+        const gy = (ay + by + cy) / 3;
+        setHTML('res-centroid', `<strong>\\( G(${fmt(gx)},\, ${fmt(gy)}) \\)</strong>`);
+        setHTML('exp-centroid', `\n          <div class="formula">\\( G = (\\tfrac{x_1 + x_2 + x_3}{3},\\ \\tfrac{y_1 + y_2 + y_3}{3}) \\)</div>\n          Подставим значения: \\( (${fmt(gx)}, ${fmt(gy)}) \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPolygon([{x:ax,y:ay},{x:bx,y:by},{x:cx,y:cy}], '#60a5fa');
+        drawPoint(ax, ay, view.point, 'A');
+        drawPoint(bx, by, view.point, 'B');
+        drawPoint(cx, cy, view.point, 'C');
+        drawPoint(gx, gy, view.result, 'G');
+      });
+
+      // Прямая через две точки
+      document.getElementById('form-line-2pts').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const x1 = parseNumber(document.getElementById('l2_ax').value);
+        const y1 = parseNumber(document.getElementById('l2_ay').value);
+        const x2 = parseNumber(document.getElementById('l2_bx').value);
+        const y2 = parseNumber(document.getElementById('l2_by').value);
+        if (approxEqual(x1, x2) && approxEqual(y1, y2)) {
+          showError('res-line-2pts', 'Точки не должны совпадать');
+          setHTML('exp-line-2pts', '');
+          return;
+        }
+        const A = y1 - y2;
+        const B = x2 - x1;
+        const C = x1 * y2 - x2 * y1;
+        const slopeText = formatSlopeIntercept(A, B, C);
+        setHTML('res-line-2pts', `<strong>Общее: ${formatGeneralEquation(A, B, C)}</strong><br/>С угловым коэффициентом: ${slopeText}`);
+        setHTML('exp-line-2pts', `\n          <div class="formula">\\( A = y_1 - y_2,\; B = x_2 - x_1,\; C = x_1 y_2 - x_2 y_1 \\)</div>\n          Уравнение: \\( ${fmt(A)}x + ${fmt(B)}y + ${fmt(C)} = 0 \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(x1, y1, view.point, 'A');
+        drawPoint(x2, y2, view.point, 'B');
+        drawSegment(x1, y1, x2, y2, '#60a5fa');
+        drawLineGeneral(A, B, C, view.line);
+      });
+
+      // Прямая через точку и направляющий вектор
+      document.getElementById('form-line-point-dir').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const x0 = parseNumber(document.getElementById('lpd_x0').value);
+        const y0 = parseNumber(document.getElementById('lpd_y0').value);
+        const vx = parseNumber(document.getElementById('lpd_vx').value);
+        const vy = parseNumber(document.getElementById('lpd_vy').value);
+        if (approxEqual(vx, 0) && approxEqual(vy, 0)) {
+          showError('res-line-point-dir', 'Направляющий вектор не должен быть нулевым');
+          setHTML('exp-line-point-dir', '');
+          return;
+        }
+        const A = vy, B = -vx, C = vx * y0 - vy * x0;
+        const param = formatParametric(x0, y0, vx, vy);
+        const slopeText = formatSlopeIntercept(A, B, C);
+        setHTML('res-line-point-dir', `<strong>Общее: ${formatGeneralEquation(A, B, C)}</strong><br/>Параметрическое: ${param}<br/>С угловым коэффициентом: ${slopeText}`);
+        setHTML('exp-line-point-dir', `\n          <div class="formula">\\( \\vec n = (v_y,\, -v_x),\; \\; \\vec n \\cdot ((x, y) - (x_0, y_0)) = 0 \\)</div>\n          Получаем: \\( ${fmt(A)}x + ${fmt(B)}y + ${fmt(C)} = 0 \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(x0, y0, view.point, 'P');
+        drawArrow(x0, y0, x0 + vx, y0 + vy, '#60a5fa');
+        drawLineGeneral(A, B, C, view.line);
+      });
+
+      // Прямая через точку перпендикулярно вектору
+      document.getElementById('form-line-point-perpvec').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const x0 = parseNumber(document.getElementById('lpp_x0').value);
+        const y0 = parseNumber(document.getElementById('lpp_y0').value);
+        const vx = parseNumber(document.getElementById('lpp_vx').value);
+        const vy = parseNumber(document.getElementById('lpp_vy').value);
+        if (approxEqual(vx, 0) && approxEqual(vy, 0)) {
+          showError('res-line-point-perpvec', 'Вектор не должен быть нулевым');
+          setHTML('exp-line-point-perpvec', '');
+          return;
+        }
+        // Перпендикулярна вектору => этот вектор является нормалью линии
+        const A = vx, B = vy, C = -(A * x0 + B * y0);
+        const slopeText = formatSlopeIntercept(A, B, C);
+        setHTML('res-line-point-perpvec', `<strong>Общее: ${formatGeneralEquation(A, B, C)}</strong><br/>С угловым коэффициентом: ${slopeText}`);
+        setHTML('exp-line-point-perpvec', `\n          <div class="formula">\\( Ax + By + C = 0,\; (A, B) \\parallel \\vec v \\)</div>\n          Подставим: \\( ${fmt(A)}x + ${fmt(B)}y + ${fmt(C)} = 0 \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(x0, y0, view.point, 'P');
+        drawArrow(x0, y0, x0 + vx, y0 + vy, '#60a5fa');
+        drawLineGeneral(A, B, C, view.line);
+      });
+
+      // В отрезках
+      document.getElementById('form-line-intercepts').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const a = parseNumber(document.getElementById('li_a').value);
+        const b = parseNumber(document.getElementById('li_b').value);
+        if (approxEqual(a, 0) || approxEqual(b, 0)) {
+          showError('res-line-intercepts', 'a и b должны быть отличны от 0');
+          setHTML('exp-line-intercepts', '');
+          return;
+        }
+        // x/a + y/b = 1 => b x + a y - ab = 0
+        const A = b, B = a, C = -a * b;
+        setHTML('res-line-intercepts', `<strong>Общее: ${formatGeneralEquation(A, B, C)}</strong>`);
+        setHTML('exp-line-intercepts', `\n          <div class="formula">\\( \\frac{x}{a} + \\frac{y}{b} = 1 \\; \\Rightarrow \\; b x + a y - ab = 0 \\)</div>\n          Точки пересечения: \\( (${fmt(a)}, 0),\ (0, ${fmt(b)}) \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawPoint(a, 0, view.point, 'X');
+        drawPoint(0, b, view.point, 'Y');
+        drawSegment(a, 0, 0, b, '#60a5fa');
+        drawLineGeneral(A, B, C, view.line);
+      });
+
+      // y = kx + b
+      document.getElementById('form-line-kb').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const k = parseNumber(document.getElementById('lkb_k').value);
+        const b = parseNumber(document.getElementById('lkb_b').value);
+        // kx - y + b = 0
+        const A = k, B = -1, C = b;
+        setHTML('res-line-kb', `<strong>Общее: ${formatGeneralEquation(A, B, C)}</strong>`);
+        setHTML('exp-line-kb', `\n          <div class="formula">\\( y = kx + b \\; \\Rightarrow \\; kx - y + b = 0 \\)</div>\n          Параметры: \\( k = ${fmt(k)},\ b = ${fmt(b)} \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        // нарисуем две точки: (0,b) и (1, k + b)
+        drawPoint(0, b, view.point, 'Y₀');
+        drawPoint(1, k + b, view.point, 'P');
+        drawSegment(0, b, 1, k + b, '#60a5fa');
+        drawLineGeneral(A, B, C, view.line);
+      });
+
+      // Параллельность прямых
+      document.getElementById('form-parallel').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const A1 = parseNumber(document.getElementById('par_A1').value);
+        const B1 = parseNumber(document.getElementById('par_B1').value);
+        const C1 = parseNumber(document.getElementById('par_C1').value);
+        const A2 = parseNumber(document.getElementById('par_A2').value);
+        const B2 = parseNumber(document.getElementById('par_B2').value);
+        const C2 = parseNumber(document.getElementById('par_C2').value);
+        const det = A1 * B2 - A2 * B1;
+        const isParallel = Math.abs(det) <= EPS;
+        const coincide = isParallel && Math.abs(A1 * 1 - A2 * 1) <= EPS && Math.abs(B1 * 1 - B2 * 1) <= EPS && Math.abs(C1 * 1 - C2 * 1) <= EPS;
+        setHTML('res-parallel', `<strong>${isParallel ? (coincide ? 'Совпадают' : 'Параллельны') : 'Не параллельны'}</strong>`);
+        setHTML('exp-parallel', `\n          <div class="formula">\\( \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \det \begin{pmatrix} A_1 & B_1 \\[4pt] A_2 & B_2 \end{pmatrix} = 0 \n          \\)</div>\n          Вычислим: \\( ${fmt(A1)}\\cdot${fmt(B2)} - ${fmt(A2)}\\cdot${fmt(B1)} = ${fmt(det)} \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawLineGeneral(A1, B1, C1, '#60a5fa');
+        drawLineGeneral(A2, B2, C2, '#22d3ee');
+      });
+
+      // Перпендикулярность прямых
+      document.getElementById('form-perp-lines').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const A1 = parseNumber(document.getElementById('pl_A1').value);
+        const B1 = parseNumber(document.getElementById('pl_B1').value);
+        const C1 = parseNumber(document.getElementById('pl_C1').value);
+        const A2 = parseNumber(document.getElementById('pl_A2').value);
+        const B2 = parseNumber(document.getElementById('pl_B2').value);
+        const C2 = parseNumber(document.getElementById('pl_C2').value);
+        const dot = A1 * A2 + B1 * B2;
+        const isPerp = Math.abs(dot) <= EPS;
+        setHTML('res-perp-lines', `<strong>${isPerp ? 'Перпендикулярны' : 'Не перпендикулярны'}</strong>`);
+        setHTML('exp-perp-lines', `\n          <div class="formula">\\( \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            A_1 A_2 + B_1 B_2 = 0 \n          \\)</div>\n          Вычислим: \\( ${fmt(A1)}\\cdot${fmt(A2)} + ${fmt(B1)}\\cdot${fmt(B2)} = ${fmt(dot)} \\)\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawLineGeneral(A1, B1, C1, '#60a5fa');
+        drawLineGeneral(A2, B2, C2, '#22d3ee');
+      });
+
+      // Пересечение двух прямых
+      document.getElementById('form-intersect').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const A1 = parseNumber(document.getElementById('is_A1').value);
+        const B1 = parseNumber(document.getElementById('is_B1').value);
+        const C1 = parseNumber(document.getElementById('is_C1').value);
+        const A2 = parseNumber(document.getElementById('is_A2').value);
+        const B2 = parseNumber(document.getElementById('is_B2').value);
+        const C2 = parseNumber(document.getElementById('is_C2').value);
+        const det = A1 * B2 - A2 * B1;
+        if (Math.abs(det) <= EPS) {
+          setHTML('res-intersect', `<strong>Нет единственной точки (прямые параллельны или совпадают)</strong>`);
+          setHTML('exp-intersect', `\n            <div class="formula">\\( \det \begin{pmatrix} A_1 & B_1 \\[4pt] A_2 & B_2 \end{pmatrix} = 0 \\)</div>\n          `);
+          ensureMathJaxTypeset();
+          autoclearIfNeeded();
+          drawLineGeneral(A1, B1, C1, '#60a5fa');
+          drawLineGeneral(A2, B2, C2, '#22d3ee');
+          return;
+        }
+        const x = (B1 * C2 - B2 * C1) / det;
+        const y = (A2 * C1 - A1 * C2) / det;
+        setHTML('res-intersect', `<strong>\\( P(${fmt(x)},\, ${fmt(y)}) \\)</strong>`);
+        setHTML('exp-intersect', `\n          <div class="formula">\\( \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            \n            x = \frac{B_1 C_2 - B_2 C_1}{A_1 B_2 - A_2 B_1},\; \; y = \frac{A_2 C_1 - A_1 C_2}{A_1 B_2 - A_2 B_1} \n          \\)</div>\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawLineGeneral(A1, B1, C1, '#60a5fa');
+        drawLineGeneral(A2, B2, C2, '#22d3ee');
+        drawPoint(x, y, view.result, 'P');
+      });
+
+      // Угол между прямыми
+      document.getElementById('form-angle-lines').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const A1 = parseNumber(document.getElementById('al_A1').value);
+        const B1 = parseNumber(document.getElementById('al_B1').value);
+        const C1 = parseNumber(document.getElementById('al_C1').value);
+        const A2 = parseNumber(document.getElementById('al_A2').value);
+        const B2 = parseNumber(document.getElementById('al_B2').value);
+        const C2 = parseNumber(document.getElementById('al_C2').value);
+        const num = Math.abs(A1 * B2 - A2 * B1);
+        const den = A1 * A2 + B1 * B2;
+        let theta;
+        if (Math.abs(den) <= EPS) theta = Math.PI / 2; else theta = Math.atan(num / Math.abs(den));
+        const deg = theta * 180 / Math.PI;
+        setHTML('res-angle-lines', `<strong>\\( \\theta = ${fmt(theta)}\,\text{рад} = ${fmt(deg)}^\\circ \\)</strong>`);
+        setHTML('exp-angle-lines', `\n          <div class="formula">\\( \tan \\theta = \\left| \frac{A_1 B_2 - A_2 B_1}{A_1 A_2 + B_1 B_2} \\right| \\)</div>\n        `);
+        ensureMathJaxTypeset();
+        autoclearIfNeeded();
+        drawLineGeneral(A1, B1, C1, '#60a5fa');
+        drawLineGeneral(A2, B2, C2, '#22d3ee');
+      });
+
+    });
+  </script>
+</body>
 </html>
